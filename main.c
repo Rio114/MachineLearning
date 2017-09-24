@@ -4,7 +4,7 @@
 //
 //  Created by Nomura Ryoji on 2016/09/15.
 //  Copyright © 2016年 Nomura Ryoji. All rights reserved.
-//
+// test git
 
 #include <stdio.h>
 #include <stdlib.h> /* rand, malloc */
@@ -54,7 +54,7 @@ int main(void){
     W_In = (double*)malloc(sizeof(double) * ImageSize * DHid);
     B_Out = (double*)malloc(sizeof(double) * ImageSize);
     W_Out = (double*)malloc(sizeof(double) * ImageSize * DHid);
-    
+
     int Label[BatchSize];
 
     //initialize W
@@ -69,27 +69,27 @@ int main(void){
     for (row=0; row<ImageSize; row++){
         B_Out[row] = 0.01 * ((double)rand()/RAND_MAX - 0.5);
     }
-    
-    
+
+
     for(ep=0; ep<EPOCH; ep++){
         ReadCifar(Image, Label, BatchSize, Size);
-    
+
         for(scan=0; scan<(ImageSize * BatchSize); scan++){
             X_In[scan] = (double)Image[scan] / 255;
         }
-    
+
         AutoEncoder(X_In, X_Out, W_In, B_In, W_Out, B_Out, BatchSize, Size, DHid, Chan);
     }
-    
+
     for(num=0; num<BatchSize; num++){
         for(scan=0; scan<(ImageSize); scan++){
             Image2[scan + num * ImageSize] = X_Out[scan + num * ImageSize] * 255;
         }
     }
-    
+
     WriteBmp(Image, Image2, Size, BatchSize);
     WriteHidden(W_In, Size, 10);
-    
+
     return 0;
 }
 
@@ -110,7 +110,7 @@ void AutoEncoder(double *input, double *output, double *W_In, double *B_In, doub
     T_Out = (double*)malloc(sizeof(double) * imagesize * batchsize);
     Dif_Out = (double*)malloc(sizeof(double) * imagesize * batchsize);
     Dif_Hid = (double*)malloc(sizeof(double) * batchsize * w_size);
-    
+
     //learning
     //forward propagation
     MatT(W_In, W_Out, imagesize, w_size);
@@ -120,19 +120,19 @@ void AutoEncoder(double *input, double *output, double *W_In, double *B_In, doub
     MulMatAddBias(U_Hid, W_Out, B_Out, output, batchsize, w_size, imagesize); // linear connection Hidden & Out, WX + B
     TANH(output, batchsize, imagesize); //activation of Out layer
     dTANH(output, dY_Out, batchsize, imagesize); //div of activation of Out layer
-        
+
     //back propagation
     SubMat(output, input, Dif_Out, batchsize, imagesize); // diff of output
     MatT(U_Hid, UT_Hid, batchsize, w_size);
     UpdateB(Dif_Out, B_Out, ETA, batchsize, batchsize, imagesize);
-        
+
     MatT(W_Out, WT_Out, w_size, imagesize);
     Delta(Dif_Out, WT_Out, dU_Hid, Dif_Hid, batchsize, imagesize, w_size); //delta of Hidden layer
-        
+
     MatT(input, XT_In, batchsize, imagesize);
     UpdateW(XT_In, Dif_Hid, W_In, ETA, batchsize, imagesize, batchsize, w_size); //update W of Input layer
     UpdateB(Dif_Hid, B_In, ETA, batchsize, batchsize, w_size);
-    
+
     free(XT_In);
     free(U_Hid);
     free(dU_Hid);
@@ -149,15 +149,15 @@ void AutoEncoder(double *input, double *output, double *W_In, double *B_In, doub
 
 void ReadCifar(unsigned char *image, int *label, int batch, int size){
     FILE *fp;
-    
+
 //    char *fname = "/Users/nomuraryoji/Documents/program/C/cifar-10-batches-bin/train-images-idx3-ubyte";
-    char *fname = "/Users/nomuraryoji/Documents/program/C/cifar-10-batches-bin/data_batch_1.bin";
+    char *fname = "cifar-10-batches-bin/data_batch_1.bin";
     int imagesize = size * size, pic_nmbr[batch];
     unsigned char buf[imagesize*3], bufL[1];
     long int offset;
-    
+
     srand((unsigned int)time(NULL)); // initialize random
-    
+
     //read image values
     fp = fopen(fname, "rb");
     if(fp == NULL){
@@ -170,11 +170,11 @@ void ReadCifar(unsigned char *image, int *label, int batch, int size){
         fseek(fp, offset, SEEK_SET);
         fread(bufL, sizeof(unsigned char), 1, fp);
         label[scan] = bufL[0];
-        
+
         offset = (pic_nmbr[scan] - 1) * (imagesize * 3 + 1) + 1;
         fseek(fp, offset, SEEK_SET);
         fread(buf, sizeof(unsigned char), imagesize * 3, fp);
-        
+
         for(num=0; num<(imagesize*3); num++){
             image[num + imagesize * 3 * scan] = buf[num];
         }
@@ -185,8 +185,8 @@ void ReadCifar(unsigned char *image, int *label, int batch, int size){
 void WriteBmp(unsigned char *buf, unsigned char *out, int size, int cnt){ //for CIFAR image
     FILE *fph;
     FILE *fpw;
-    char *fname_h = "/Users/nomuraryoji/Documents/program/C/cifar-10-batches-bin/Header";
-    char *fname_w = "/Users/nomuraryoji/Documents/program/C/cifar-10-batches-bin/test.bmp";
+    char *fname_h = "cifar-10-batches-bin/Header";
+    char *fname_w = "cifar-10-batches-bin/test.bmp";
     int offsetR, offsetG, offsetB;
     unsigned char buf2[size * size * 2 * 4];
     char bufHeader[HeaderSize];
@@ -196,10 +196,10 @@ void WriteBmp(unsigned char *buf, unsigned char *out, int size, int cnt){ //for 
     if(fph == NULL){
         printf("%sファイルが開けません¥n", fname_h);
     }
-    
+
     fread(bufHeader, sizeof(unsigned char), HeaderSize, fph);
     fclose(fph);
-    
+
     bufHeader[18] = size * 2;
     if(size*cnt >= 256){
         bufHeader[22] = -(size * cnt % 256);
@@ -207,27 +207,27 @@ void WriteBmp(unsigned char *buf, unsigned char *out, int size, int cnt){ //for 
     }else if(size*cnt < 256){
         bufHeader[22] = -size * cnt;
     }
-    
+
     //write image values
     fpw = fopen(fname_w, "wb");
     if(fpw == NULL){
         printf("書込用 %sファイルが開けません¥n", fname_w);
     }
-    
+
     fwrite(bufHeader, sizeof(unsigned char), HeaderSize, fpw);
-    
+
     for(num=0; num<cnt; num++){
         for(col=0; col<size; col++){
             for(row=0; row<size; row++){
                 offsetR = col + row * size + size * size * 0 + num * size * size * 3;
                 offsetG = col + row * size + size * size * 1 + num * size * size * 3;
                 offsetB = col + row * size + size * size * 2 + num * size * size * 3;
-            
+
                 buf2[(col + row * size * 2) * 4 + 0] = buf[offsetB];
                 buf2[(col + row * size * 2) * 4 + 1] = buf[offsetG];
                 buf2[(col + row * size * 2) * 4 + 2] = buf[offsetR];
                 buf2[(col + row * size * 2) * 4 + 3] = 0;
-            
+
                 buf2[(col + size + row * size * 2) * 4 + 0] = out[offsetB];
                 buf2[(col + size + row * size * 2) * 4 + 1] = out[offsetG];
                 buf2[(col + size + row * size * 2) * 4 + 2] = out[offsetR];
@@ -236,25 +236,25 @@ void WriteBmp(unsigned char *buf, unsigned char *out, int size, int cnt){ //for 
         }
         fwrite(buf2, sizeof(unsigned char), size * size * 2 * 4, fpw);
     }
-    
+
     fclose(fpw);
 }
 
 void WriteHidden(double *hid, int size, int cnt){ //for CIFAR image
     FILE *fph;
     FILE *fpw;
-    char *fname_h = "/Users/nomuraryoji/Documents/program/C/cifar-10-batches-bin/Header";
-    char *fname_w = "/Users/nomuraryoji/Documents/program/C/cifar-10-batches-bin/hidden.bmp";
+    char *fname_h = "cifar-10-batches-bin/Header";
+    char *fname_w = "cifar-10-batches-bin/hidden.bmp";
     int offsetR, offsetG, offsetB;
     unsigned char buf2[size * size * 4];
     char bufHeader[HeaderSize];
-    
+
     //BMP header values
     fph = fopen(fname_h, "rb");
     if(fph == NULL){
         printf("%sファイルが開けません¥n", fname_h);
     }
-    
+
     fread(bufHeader, sizeof(unsigned char), HeaderSize, fph);
     fclose(fph);
 
@@ -264,15 +264,15 @@ void WriteHidden(double *hid, int size, int cnt){ //for CIFAR image
     }else if(size*cnt < 256){
         bufHeader[22] = -size * cnt;
     }
-    
+
     //write image values
     fpw = fopen(fname_w, "wb");
     if(fpw == NULL){
         printf("書込用 %sファイルが開けません¥n", fname_w);
     }
-    
+
     fwrite(bufHeader, sizeof(unsigned char), HeaderSize, fpw);
-    
+
     for(num=0; num<cnt; num++){
         for(scan=0; scan<(size * size); scan++){
             offsetR = scan + size * size * 0 + num * size * size * 3;
@@ -285,7 +285,7 @@ void WriteHidden(double *hid, int size, int cnt){ //for CIFAR image
         }
         fwrite(buf2, sizeof(unsigned char), size * size * 4, fpw);
     }
-    
+
     fclose(fpw);
 }
 
@@ -421,4 +421,3 @@ void UpdateB(double *A, double *Bi, double eta, int bs, int I, int J){
         }
     }
 }
-
