@@ -4,7 +4,7 @@
 //
 //  Created by Nomura Ryoji on 2016/09/15.
 //  Copyright © 2016年 Nomura Ryoji. All rights reserved.
-// test git
+// change test
 
 #include <stdio.h>
 #include <stdlib.h> /* rand, malloc */
@@ -13,8 +13,8 @@
 
 #define BatchSize 10//batch size for each epoch
 #define HeaderSize 54 //header size of bmp file
-#define DataCount 10000 //data size of learning
-#define TestCount 10000 //data size of learning
+#define DataCount 20000 //data size of learning
+#define TestCount 20000 //data size of learning
 #define Size 32 //length of data 32x32=1024
 #define ClassCount 10 //dimension of output
 
