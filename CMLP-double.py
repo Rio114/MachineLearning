@@ -10,6 +10,7 @@ import time
 #from multiprocessing import Pool
 #from multiprocessing import Process
 #import functools
+#test
 
 def gaborc(H,k): #H is size of filter, l is direction, k is coeff for sigma
     buf = np.zeros([H, H])
