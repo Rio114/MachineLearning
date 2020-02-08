@@ -8,5 +8,7 @@ build:
           cd unbalance
           review pdfmaker config.yml
           cp book.pdf ${WERCKER_REPORT_ARTIFACTS_DIR}/
+          chmod +x ../hoge.sh
           ../hoge.sh
+          chmod +x ../upload_dropbox.sh
           ../upload_dropbox.sh book.pdf ${DROPBOX_TOKEN}
