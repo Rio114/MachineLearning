@@ -6,12 +6,9 @@
 /*-epub
 /*-text
 
-doc
-sty
-lib
-Gemfile
-Rakefile
 
+.ipynb_checkpoints
+*.csv
 
 /vendor
 /.bundle

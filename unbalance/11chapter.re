@@ -327,23 +327,20 @@ f1スコアはPrecisionとRecallから計算されるが、Precisionに引っ張
 ==== Accuracy
 AのものはA、BのものはB、CのものはCとどれだけ正確に予測できているかという指標である。二値分類でのAccuracyと同様に不均衡なデータでは多数を占めるクラスの影響が大きい。また、後に示すようにPrecisionやRecallのマイクロ平均に一致する。
 
- * Accuracy = (TA + TB + TC) / (TA + FB_A + FC_A + TB + FA_B + FC_B + TC + FA_C + FB_C)
-
-*多クラスの混合行列の図*
+//image[Accuracy_mult][多クラスにおけるAccuracy][scale=0.7]{
+//}
 
 ==== Precision
 例えばAについて着目したとき、Aと予測したもののうち真にAであるものの割合、という指標になる。
 
- * Precision_A = TA / (TA + FA_B + FA_C)
-
-*多クラスの混合行列の図*
+//image[Precision_mult][多クラスにおけるPrecision][scale=0.7]{
+//}
 
 ==== Recall
 例えばAについて着目したとき、真実がAのものをどれだけ捕捉できたか、という指標になる。
 
- * Recall_A = TA / (TA + FB_A + FC_A)
-
-*多クラスの混合行列の図*
+//image[Recall_mult][多クラスにおけるRecall][scale=0.7]{
+//}
 
 === 指標の平均
 
@@ -361,6 +358,7 @@ AのものはA、BのものはB、CのものはCとどれだけ正確に予測�
 
 ミクロ平均は割り算を行うときに全て考慮してしまう。マクロ平均と異なり、クラス間で不均衡な場合は多数クラスの結果に引っ張られる。
 
- * Recall_micro = (TA + TB + TC) / (TA + FB_A + FC_A + TB + FA_B + FC_B + TC + FA_C + FB_C)
+//image[micro_ave][Precisionのミクロ平均][scale=0.7]{
+//}
 
 重要な性質として、Accuracy、Precision、Recallをそれぞれミクロ平均を計算すると全て同じ値になるという点がある。
