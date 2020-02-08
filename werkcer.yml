@@ -1,0 +1,10 @@
+box: vvakame/review
+
+build:
+  steps:
+    - script:
+        name: Build PDF
+        code: |
+          cd unbalance
+          rake clean pdf
+          ../upload_dropbox.sh book.pdf ${DROPBOX_TOKEN}
