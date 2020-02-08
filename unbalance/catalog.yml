@@ -4,7 +4,7 @@ PREDEF:
 CHAPS:
   - 11chapter.re
   - 12chapter.re
-#  - 13chapter.re
+  - 13chapter.re
 
 APPENDIX:
 
