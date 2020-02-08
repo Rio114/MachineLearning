@@ -6,5 +6,5 @@ build:
         name: Build PDF
         code: |
           cd unbalance
-          rake clean pdf
+          review pdfmaker config.yml
           ../upload_dropbox.sh book.pdf ${DROPBOX_TOKEN}
