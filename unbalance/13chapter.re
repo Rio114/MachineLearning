@@ -98,15 +98,17 @@ X'、T'は二値分類モデルの学習前に分けたValidである。
 
 予測値分布の確率密度が計算できれば後は次の式で正例割合を算出できる。
 
-Y = N_pos * Dist_pos / (N_pos * Dist_pos + N_neg * Dist_neg)
+//texequation{
+Y = \frac{N_p\times Dist_p}{N_p\times Dist_p + N_n\times Dist_n}
+//}
 
 //table[Dist_fit][正例割合算出での変数]{
 シンボル	名称
 ------------
-N_pos	Trainの正例の数
-N_neg	Trainの負例の数
-Dist_pos	正例に対する予測値Sでの確率密度
-Dist_neg	負例に対する予測値Sでの確率密度
+N@<sub>{p}	Trainの正例の数
+N@<sub>{n}	Trainの負例の数
+Dist@<sub>{p}	正例に対する予測値Sでの確率密度
+Dist@<sub>{n}	負例に対する予測値Sでの確率密度
 //}
 
 正例負例それぞれの予測値分布について、パラメータCによる分布と実際の分布の当てはまりが良ければ、最終的にTとYは近い値になっているはずである。
@@ -119,12 +121,12 @@ Dist_neg	負例に対する予測値Sでの確率密度
 == 誤差評価
 === 二乗誤差
 どれだけ線形かを示す指標として、二乗誤差が便利である。
-ここでは予測値=正例割合と仮定してそこからどれだけずれているかを、RMSE（rooted mean squared error）で考える。
+ここでは予測値=正例割合と仮定してそこからどれだけずれているかをRMSE（rooted mean squared error）で考える。
 @<img>{pred_error}のように予測値から期待される正例割合Sと、実際の正例割合Yの差の二乗を平均して平方根をとるという計算である。
 これにより、予測値と実際の正例割合がどの程度ずれているかを把握できる。
 
-//list[RMSE][RMSEの定義]{
-RMSE = (((S1-Y1)^2 + (S2-Y2)^2 ,,, (Sn-Yn)^2) / N)^0.5
+//texequation{
+RMSE = \sqrt{\frac{(S_1-Y_1)^2+(S_2-Y_2)^2 ,,, (S_n-Y_n)^2}{N}}
 //}
 
 //image[pred_error][二乗誤差][scale=0.6]{
@@ -134,10 +136,10 @@ RMSE = (((S1-Y1)^2 + (S2-Y2)^2 ,,, (Sn-Yn)^2) / N)^0.5
 二値分類モデルを学習するときに損失関数としてよく用いられるのがLoglossである。
 データ点が複数ある時には単純に和をとる。
 ただし、0log(0)=0とする。
-正例すなわちt=1では-t*log(y)だけが損失として算入され、負例すなわちt=0では-(1-t)*log(1-y)だけが損失になることを確認してほしい。
+正例すなわちt=1では-tlog(y)だけが損失として算入され、負例すなわちt=0では-(1-t)log(1-y)だけが損失になることを確認してほしい。
 
-//list[Logloss][Loglossの定義]{
-Logloss = -t * log(y) - (1-t) * log(1-y)
+//texequation{
+Logloss=-t\times log(y)-(1-t)\times log(1-y)
 //}
 
 //table[Logloss_param][Loglossの変数]{
@@ -154,7 +156,7 @@ y	予測値。0から1の実数
 
 一方で、正例と負例で同じ重みでLoglossが計算されるので負例に大きく偏っていると、負例の予測値を0に近づけるだけでLoglossが改善されていく。
 このため、Loglossを損失関数にしている二値分類モデルでは不均衡データの学習が難しい。
-ある程度負例にフィッティングしてしまうと、Loglossが小さくなってしまい学習の勾配がつかなくなるためである。
+ある程度負例をしてしまうと、Loglossが小さくなってしまい学習の勾配がつかなくなるためである。
 このようにLoglossで最終的な評価を行うには注意が必要である。
 
 === 二乗誤差とLoglossの比較
@@ -182,7 +184,7 @@ y	予測値。0から1の実数
 今回は検証していないが良いアイディアかもしれない。
 
 == 評価例
-前章のSantanderの例で、予測値のフィッティングを行ってみる。
+前章のSantanderの例で、予測値の補正を行ってみる。
 
 === 予測値と正例割合の相関図
 まず初めに、LightGBMから出てきた予測値と正例の割合の相関を直接見てみる。
@@ -200,50 +202,58 @@ y	予測値。0から1の実数
 //image[score_hist_train][予測値分布][scale=0.6]{
 //}
 
-=== ベータ分布による正例割合のフィッティング
+=== ベータ分布による正例割合の補正
 ベータ分布は数式によりパラメトリックに算出できるので、ある予測値Sにおける正例の予測割合は次のように計算できる。@<table>{beta_fit}に数式のシンボルの意味をまとめた。
 
 数理統計の計算により、ベータ分布のパラメータと平均と分散の関係は以下のように表される。
 
-//list[bera_param1][ベータ分布の母数と平均分散]{
-e = a / (a+b)
-v = ab / (a+b)^2 / (a+b+1)
+//texequation{
+e = \frac{a}{a+b}
+//}
+
+//texequation{
+v = \frac{ab}{ (a+b)^2 (a+b+1)}
 //}
 
 これをalpha, betaについて解くことで、平均と分散からalpha, betaが簡単に得られる。
 
-//list[bera_param2][ベータ分布の母数と平均分散(解)]{
-a = e^2 (1-e) / v - e
-b = (1-e) / e * a
+//texequation{
+a = \frac{e^2 (1-e)}{v}-e
+//}
+
+//texequation{
+b = \frac{(1-e)}{e}a
 //}
 
 alpha, betaと予測値Sがあればベータ分布の確率密度を算出することができる。
 正例負例それぞれについて確率密度を計算して、Trainでの正例負例の数を考慮することで以下のように正例割合を予測することができる。
 
-Y = N_pos * Beta_pos / (N_pos * Beta_pos + N_neg * Beta_neg)
+//texequation{
+Y = \frac{N_p\times Beta_p}{N_p\times Beta_p + N_n\times Beta_n}
+//}
 
-//table[beta_fit][ベータ分布フィッティングの変数]{
+//table[beta_fit][ベータ分布による補正の変数]{
 シンボル	名称
 ------------
-e	予測分布の平均
-v	予測分布の分散
-a	ベータ分布の母数１
-b	ベータ分布の母数２
-N_pos	Trainの正例の数
-N_neg	Trainの負例の数
-Beta_pos	正例に対する、母数a,b、予測値Sでの確率密度
-Beta_neg	負例に対する、母数a,b、予測値Sでの確率密度
+e	予測分布の平均、正例負例それぞれにある
+v	予測分布の分散、正例負例それぞれにある
+a	ベータ分布の母数alpha、正例負例それぞれにある
+b	ベータ分布の母数beta、正例負例それぞれにある
+N@<sub>{p}	Trainの正例の数
+N@<sub>{n}	Trainの負例の数
+Beta@<sub>{p}	正例に対する、母数a,b、予測値Sでの確率密度
+Beta@<sub>{n}	負例に対する、母数a,b、予測値Sでの確率密度
 //}
 
 上式により、LightGBMによる予測値Sは@<img>{score_cal_score_plot}のように正例の予測割合Yに変換される。
 ここでは、予測値Sに対して数式を用いてパラメトリックに決まった値が算出されるのでTrainだけを示している。
 
-//image[score_cal_score_plot][元の予測値と正例割合の予測値][scale=0.6]{
+//image[score_cal_score_plot][元の予測値と正例割合の予測値の対応][scale=0.6]{
 //}
 
 結果として予測値を正例割合に補正した相関図が@<img>{cal_score_ratio_plot}である。
 @<img>{corr_plot}と同様に予測値を0.01刻みでまとめてある。
-予測値が正例割合をうまく予測できていることがわかる。
+補正前の@<img>{corr_plot}と比較してみると、補正した@<img>{cal_score_ratio_plot}では予測値が正例割合をうまく予測できていることがわかる。
 
 //image[cal_score_ratio_plot][正例割合の予測値と正例割合の相関図][scale=0.6]{
 //}
