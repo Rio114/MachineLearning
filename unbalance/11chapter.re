@@ -301,6 +301,7 @@ F1	0.6406	0.1638
 
 損失行列は、混合行列の4つの事象に対してどれだけの損失（もしくは利益）が得られるかを表したものである。
 それぞれの損失がどの程度になるかはドメイン知識が必要であるが、考え方は@<img>{loss_mat}のようにシンプルである。
+TP、FN、FP、TNそれぞれに1データ当たりのコストや利益を先に見積もっておき、それぞれの数をかけて4つの数字を足しわせることで全体のコストもしくは利益が得られる。
 ここではコストとしてマイナスの場合は損失を表し、プラスの場合は利益を表す。
 
 //image[loss_mat][損失行列]{
@@ -345,7 +346,7 @@ F1	0.6406	0.1638
 //}
 
 //table[loss_matrix_deseace_B][パターンBの検査の損失行列（全体）]{
-パターンA	正の予測	負の予測	合計
+パターンB	正の予測	負の予測	合計
 ------------
 正例	 -9900	-2000	-11900
 負例	-10000	    0	-10000
@@ -388,7 +389,7 @@ F1	0.6406	0.1638
 //}
 
 //table[loss_matrix_deliver_B][パターンBの配信の損失行列（全体）]{
-パターンA	正の予測	負の予測	合計
+パターンB	正の予測	負の予測	合計
 ------------
 正例	9900	0	9900
 負例	-10000	0	-10000
@@ -424,8 +425,16 @@ F1	0.6406	0.1638
 
 ==== Accuracy
 多クラス分類でのAccuracyとはAのものはA、BのものはB、CのものはCとどれだけ正確に予測できているかという指標である。
-このAccuracyの定義は@<img>{Accuracy_mult}の通りである。
+このAccuracyの定義は以下の通りである。
 
+//texequation{
+Precision_{micro} =
+//}
+
+//texequation{
+\frac{TA + TB + TC}
+{TA + FA_B + FA_C + TB + FB_A + FB_C + TC + FC_A + FC_B}
+//}
 //image[Accuracy_mult][多クラスにおけるAccuracy][scale=0.7]{
 //}
 
@@ -435,7 +444,12 @@ F1	0.6406	0.1638
 ==== Precision
 多クラス分類でのPrecisionはそれぞれのクラスに着目して算出される。
 例えばAについて着目したとき、Aと予測したもののうち真にAであるものの割合、という指標になる。
-このPrecisionの定義は@<img>{Precision_mult}の通りである。
+このPrecisionの定義は以下のの通りである。
+
+//texequation{
+Precision_A = \frac{TA}
+{TA + FA_B + FA_C}
+//}
 
 //image[Precision_mult][多クラスにおけるPrecision][scale=0.7]{
 //}
@@ -443,7 +457,12 @@ F1	0.6406	0.1638
 ==== Recall
 Precisionと同様に、多クラス分類でのRecallもそれぞれのクラスに着目して算出される。
 例えばAについて着目したとき、真実がAのものをどれだけ捕捉できたか、という指標になる。
-このRecallの定義は@<img>{Recall_mult}の通りである。
+このRecallの定義は以下の通りである。
+
+//texequation{
+Recall_A = \frac{TA}
+{TA + FB_A + FC_A}
+//}
 
 //image[Recall_mult][多クラスにおけるRecall][scale=0.7]{
 //}
@@ -481,7 +500,11 @@ Precision_{macro} = w_A\times Precision_A + w_B\times Precision_B,,,
 つまり、Precision、Recallをそれぞれミクロ平均はAccuracyと等しい。
 
 //texequation{
-Precision_{micro} = \frac{TA + TB + TC}
+Precision_{micro} =
+//}
+
+//texequation{
+\frac{TA + TB + TC}
 {TA + FA_B + FA_C + TB + FB_A + FB_C + TC + FC_A + FC_B}
 //}
 

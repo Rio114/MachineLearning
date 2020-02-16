@@ -45,17 +45,16 @@ AUCがどんなものであるかは後ほど説明するとして、忙しい�
  * FPが正の予測のうちの何割か。Precisionで誤検知を評価する。
 
 前者はROC曲線といい、後者はPR曲線という。
-二つあってややこしいが、両方とも正例の捕捉率に対する誤検知（FP）を評価している点で共通している。
 
 == ROC曲線
+閾値を連続的に変えていったときに、FPRとTPRの組み合わせがどのように変化していくかを視覚化したのがReceiver Operating Characteristic curve（受信者動作特性曲線)、略してROC曲線である。
 ROC曲線では見逃しをTPR（Recall）、負例が誤って正と予測されたFPRで誤検知を評価する。
 通常、負例の中から正と予測した割合（FPR）よりも正例の中から正と予測した割合（TPR）のほうが大きくなる。
 もし逆にFPRが大きい場合、正の予測を負の予測だと読み替えることで負例を効率的に集めることができる。
-閾値を連続的に変えていったときに、FPRとTPRの組み合わせがどのように変化していくかを視覚化したのがReceiver Operating Characteristic curve（受信者動作特性曲線)、略してROC曲線である。
 
 === 曲線の描き方
 予測値（Score）の順番にデータ点を並べて、閾値を動かしていった時に、x軸にFPR、y軸にTPRを取ったものがROC曲線である。
-@<table>{thres06}、@<table>{thres04}は予測値、正例負例のflgも同一であるが、閾値だけが異なるためNo.5, 6の混合行列のクラスが異なっている。
+@<table>{thres06}、@<table>{thres04}は予測値、正例負例のflgも同一であるが、閾値だけが異なるためNo.5, 6の混合行列での割り当て（class）が異なっている。
 それに伴って、FPRとTPRの組み合わせも異なっている。
 
 //table[thres06][スコア0.6以上は正予測]{
@@ -76,11 +75,11 @@ No.	Score	flg	class
 @<table>{thres06}によるFPR、TPRは次の通りである。
 
 //texequation{
-FPR = \frac{FP数}{flg=0の数} = \frac{1}{5} = 0.2
+FPR = \frac{FPの数}{flg=0の数} = \frac{1}{5} = 0.2
 //}
 
 //texequation{
-TPR = \frac{TP数}{flg=1の数} = \frac{3}{5} = 0.6
+TPR = \frac{TPの数}{flg=1の数} = \frac{3}{5} = 0.6
 //}
 
 
@@ -102,11 +101,11 @@ No.	Score	flg	class
 @<table>{thres04}によるFPR、TPRは次の通りである。
 
 //texequation{
-FPR = \frac{FP数}{flg=0の数} = \frac{2}{5} = 0.4
+FPR = \frac{FPの数}{flg=0の数} = \frac{2}{5} = 0.4
 //}
 
 //texequation{
-TPR = \frac{TP数}{flg=1の数} = \frac{4}{5} = 0.8
+TPR = \frac{TPの数}{flg=1の数} = \frac{4}{5} = 0.8
 //}
 
 同様の表とFPRとTPRの組み合わせを予測値の値の数だけ作ることができる。
@@ -158,11 +157,13 @@ AUCが同じなら左のほうの立ち上がりが良いほうが良いモデ�
 例えば疾患の検査で、罹患していない人に対して誤診断による必要以上の精密検査は損失が大きいといった状況で、正例の捕捉と負例の捕捉のバランスを考えるときなどで有効である。
 
 == Precision-Recall曲線
-見逃しをRecallで評価し、正予測に対して誤って正と予測した割合Precisionで誤検知を評価したいときにはPrecision-Recall曲線を用いる。
-
-つまり、正例を多く捕捉しつつ、正の予測ではなるべく多くを言い当てたい。
+閾値を連続的に変えていったときに、RecallとPrecisionの組み合わせがどのように変化していくかを視覚化したのがPrecision-Recall曲線、略してPR曲線である。
+見逃しをRecallで評価し、正予測に対して誤って正と予測した割合Precisionで誤検知を評価したいときにはPR曲線を用いる。
 ROC曲線とのニュアンスの違いが難しいが、こちらでは負例の数についてはあまり興味がない状況を念頭に置いている。
 これにより、正例の捕捉割合を上げることで正の予測の正しさがどれだけ下がるかのトレードオフを視覚化できる。
+
+名前の順番がややこしいので注意が必要である。x軸がRecallでy軸がPrecisionであり、見たいものはPrecisionである。
+Recall-Precisionと呼んでも良い気がするが、sklearnのクラス名ではPrecision-Recallの順番である。
 
 === 曲線の描き方
 スコアの順番にデータ点を並べて、閾値を動かしていった時に、x軸にRecall、y軸にPrecisionを取ったものがPrecision-Recall曲線である。ROC曲線の書き方で挙げた例について、以下のように計算される。
@@ -170,26 +171,26 @@ ROC曲線とのニュアンスの違いが難しいが、こちらでは負例�
 @<table>{thres06}によるRecall、Precisionは次の通りである。
 
 //texequation{
-Recall = \frac{TP数}{flg=1の数} = \frac{3}{5} = 0.6
+Recall = \frac{TPの数}{flg=1の数} = \frac{3}{5} = 0.6
 //}
 
 //texequation{
-Precision = \frac{TP数}{TP+FPの数} = \frac{3}{4} = 0.75
+Precision = \frac{TPの数}{TP+FPの数} = \frac{3}{4} = 0.75
 //}
 
 また、@<table>{thres04}によるRecall、Precisionは次の通りである。
 
 //texequation{
-Recall = \frac{TP数}{flg=1の数} = \frac{4}{5} = 0.8
+Recall = \frac{TPの数}{flg=1の数} = \frac{4}{5} = 0.8
 //}
 
 //texequation{
-Precision = \frac{TP数}{TP+FPの数} = \frac{4}{6} = 0.75
+Precision = \frac{TPの数}{TP+FPの数} = \frac{4}{6} = 0.75
 //}
 
 @<img>{pr}は@<table>{thres06}、@<table>{thres04}から算出される点（Recall, Precision）をプロットした例である。
 
-//image[pr][ROC曲線][scale=0.7]{
+//image[pr][PR曲線][scale=0.7]{
 //}
 
 === AP（PR曲線のAUC）
@@ -215,7 +216,11 @@ PR曲線もROC曲線と同様に、予測値は順番に並べることができ
 === データセット：Santander
 二値分類の例としてKaggleからSantander Customer Transaction Predictionのデータを用いた。
 
-@<href>{https://www.kaggle.com/c/santander-customer-transaction-prediction}
+　
+
+https://www.kaggle.com/c/santander-customer-transaction-prediction
+
+　
 
 これは顧客属性から金融商品の購入予測を行うものである。
 説明変数である顧客属性は200種類の連続変数であり、どんな金融商品かは述べられていないが目的変数は0か1の二値である。

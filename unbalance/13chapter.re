@@ -240,7 +240,7 @@ alpha, betaと予測値Sがあればベータ分布の確率密度を算出す�
 a、bを使ってベータ分布の乱数をTrainのデータ数だけ発生させると@<img>{beta_random_hist}のようになる。
 0.1未満や0.9以上の分布の形は若干異なっているものの、@<img>{score_hist_train}によく似ている。
 
-//image[beta_random_hist][予測値の近似][scale=0.6]{
+//image[beta_random_hist][予測値分布の近似][scale=0.6]{
 //}
 
 === ベータ分布による正例割合の補正
