@@ -63,7 +63,7 @@
  ** 正予測：予測が正（Positive）
  ** 負予測：予測が負（Negative
 
-//image[split][母集団の分割][scale=0.5]{
+//image[split][母集団の分割][scale=0.4]{
 //}
 
 === 組み合わせによる分類
@@ -72,7 +72,7 @@
 真実でも予測でも、正としたものをPositive、負としたものをNegativeとする。
 さらに、予測が真実と同じであればTrue、予測が真実と異なればFalseとする。
 
-//image[conf_mat][混合行列][scale=0.5]{
+//image[conf_mat][混合行列][scale=0.4]{
 //}
 
 例えば、負例に正の予測をしてしまうことを、False Positiveという。False Positiveは偽陽性や誤検知と言ったりもする。以降では用語に慣れるため、「誤検知（FP）」のようにTP、FN、FP、TNを適宜かっこ書きで示していく。
@@ -135,7 +135,7 @@ Accuracyの定義は以下の通りである。
 Accuracy = \frac{TP+TN}{TP+FN+FP+TN}
 //}
 
-//image[Accuracy][Accuracy（正解率）][scale=0.7]{
+//image[Accuracy][Accuracy（正解率）][scale=0.5]{
 //}
 
 正例は正、負例は負とということをどれだけ正確に言い当てているかという指標である。
@@ -162,7 +162,7 @@ Precisionの定義は以下の通りである。
 Precision = \frac{TP}{TP+FP}
 //}
 
-//image[Precision][Precision（正予測の言い当て率）][scale=0.7]{
+//image[Precision][Precision（正予測の言い当て率）][scale=0.5]{
 //}
 
 TP+FPという分母は正の予測の合計であり、分子は正の予測の中の正例の数なので、正予測の言い当て率だといえる。
@@ -191,7 +191,7 @@ Recallの定義は以下の通りである。
 Recall = \frac{TP}{TP+FN}
 //}
 
-//image[Recall][Recall（正例の捕捉率）][scale=0.7]{
+//image[Recall][Recall（正例の捕捉率）][scale=0.5]{
 //}
 
 TPR（True Positive Rate）や再現率とも言う。
@@ -220,7 +220,7 @@ FPRの定義は以下の通りである。
 FPR = \frac{FP}{FP+TN}
 //}
 
-//image[FPR][FPR（負例の取りこぼし率）][scale=0.7]{
+//image[FPR][FPR（負例の取りこぼし率）][scale=0.5]{
 //}
 
 単独ではあまり使うことは無いが、モデルを評価するためROC曲線を描くために算出される。
@@ -410,13 +410,13 @@ TP、FN、FP、TNそれぞれに1データ当たりのコストや利益を先�
 @<img>{conf_mat_mult}にクラスがA, B, Cの3クラスである予測の混合行列を示す。
 予測の間違いについて、例えばFB@<sub>{A}としたときに、真実はAであるがBと予測してしまったFalseと表記する。
 
-//image[conf_mat_mult][多クラスの混合行列][scale=0.5]{
+//image[conf_mat_mult][多クラスの混合行列][scale=0.4]{
 //}
 
 もし、A, B, Cの分類においてB, Cの区別が重要ではなくAかA以外かの二値分類で十分な場合、
 多クラスの混合行列から二値分類の混合行列は@<img>{conf_mat_mult_bi}のように直ちに得られる。
 
-//image[conf_mat_mult_bi][多クラスの混合行列を二値に還元したもの][scale=0.5]{
+//image[conf_mat_mult_bi][多クラスの混合行列を二値に還元したもの][scale=0.4]{
 //}
 
 === 多クラスの評価指標
@@ -435,7 +435,7 @@ Precision_{micro} =
 \frac{TA + TB + TC}
 {TA + FA_B + FA_C + TB + FB_A + FB_C + TC + FC_A + FC_B}
 //}
-//image[Accuracy_mult][多クラスにおけるAccuracy][scale=0.7]{
+//image[Accuracy_mult][多クラスにおけるAccuracy][scale=0.5]{
 //}
 
 二値分類でのAccuracyと同様に不均衡なデータでは多数を占めるクラスの影響が大きい。
@@ -451,8 +451,6 @@ Precision_A = \frac{TA}
 {TA + FA_B + FA_C}
 //}
 
-//image[Precision_mult][多クラスにおけるPrecision][scale=0.7]{
-//}
 
 ==== Recall
 Precisionと同様に、多クラス分類でのRecallもそれぞれのクラスに着目して算出される。
@@ -464,8 +462,7 @@ Recall_A = \frac{TA}
 {TA + FB_A + FC_A}
 //}
 
-//image[Recall_mult][多クラスにおけるRecall][scale=0.7]{
-//}
+
 
 === 指標の平均
 
@@ -508,7 +505,7 @@ Precision_{micro} =
 {TA + FA_B + FA_C + TB + FB_A + FB_C + TC + FC_A + FC_B}
 //}
 
-//image[micro_ave][Precisionのミクロ平均][scale=0.7]{
+//image[micro_ave][Precisionのミクロ平均][scale=0.5]{
 //}
 
 式からわかるようにマクロ平均と異なり、クラス間で不均衡な場合は多数クラスの結果に引っ張られる。
